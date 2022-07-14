@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getMedicalAppointment" doc:id="3ba2440d-9f55-458d-a536-1c2884366a3a" >
+		<http:listener doc:name="HTTP POST" doc:id="cf4dff6a-d60f-4321-acdf-5d1abe398c0b" config-ref="HTTP_Listener_config" path="/beforeafter" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Log PAYLOAD" doc:id="189d0a01-e0d1-48b2-ab2d-87a6d92a1165" message="#[%dw 2.0&#10;&#10;&#10;output application/json&#10;---&#10;payload]"/>
+		<logger level="INFO" doc:name="Log END" doc:id="818f6b77-7fb0-4758-8678-34a866432514" message='#["LOG END"]'/>
+	</flow>
+</mule>
