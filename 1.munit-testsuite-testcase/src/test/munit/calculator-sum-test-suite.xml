@@ -8,7 +8,7 @@
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="1.munit-testsuite-testcase-test-suite.xml" />
-	<munit:test name="sumIsValidTestCase" doc:id="01f98476-d8e6-40fa-8e7c-edd9f0ab910e" description="Test">
+	<munit:test name="sumIsValidTestCase" doc:id="01f98476-d8e6-40fa-8e7c-edd9f0ab910e" description="Test" timeOut="10">
 		<munit:behavior >
 			<set-payload value='#[%dw 2.0&#10;&#10;&#10;output application/json&#10;---&#10;{&#10;	"a": 5,&#10;	"b": 5&#10;}]' doc:name="Set Payload" doc:id="1d771a1d-1eb1-4f83-8e58-dc7022edcb8b" />
 		</munit:behavior>
@@ -34,7 +34,7 @@
 	</munit:test>
 	<munit:test name="sumIsNegativeTestCase" doc:id="cd16766a-b615-49e1-a93e-78d4097f7968" >
 		<munit:behavior >
-			<set-payload value='#[%dw 2.0&#10;&#10;&#10;output application/json&#10;---&#10;{&#10;	"a": 5,&#10;	"b": 8&#10;}]' doc:name="Set Payload" doc:id="b2a3e466-7db7-4fdb-957b-99bcb72eeb1d" />
+			<set-payload value='#[%dw 2.0&#10;&#10;&#10;output application/json&#10;---&#10;{&#10;	"a": 5,&#10;	"b": -8&#10;}]' doc:name="Set Payload" doc:id="b2a3e466-7db7-4fdb-957b-99bcb72eeb1d" />
 		</munit:behavior>
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to basicCalculator" doc:id="c08a5cd0-09a1-4a86-b0e2-ff3d59d10abd" name="basicCalculator"/>
