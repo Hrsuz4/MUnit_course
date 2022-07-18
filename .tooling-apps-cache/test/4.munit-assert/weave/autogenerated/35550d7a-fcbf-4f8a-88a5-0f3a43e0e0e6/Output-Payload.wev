@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_35550d7a_fcbf_4f8a_88a5_0f3a43e0e0e6_Output_Payload = Array<"MuleSoft" | "Cristiano Ronaldo" | "Bill Gates" | "Nelson Dias">
-

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getAnimals" doc:id="3c2079a9-8b99-4b0d-8ad7-c4e04b585d6a" >
+		<http:listener doc:name="HTTP GET" doc:id="093509ff-1a78-4c31-be00-b89dfb59b469" config-ref="HTTP_Listener_config" path="/mock-when-animals" allowedMethods="GET"/>
+		<logger level="INFO" doc:name="Log BEFORE REQUEST" doc:id="760b020d-2853-42a1-8b18-87f0a02ace1a" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;"Log BEFORE REQUEST"]'/>
+		<http:request method="GET" doc:name="GET Request - getAnimalsLostPayload" doc:id="cee5766d-4af7-4086-9f47-75345e0fc735" config-ref="HTTP_Request_configuration" path="/mock-when-get"/>
+		<logger level="INFO" doc:name="Log AFTER REQUEST" doc:id="4e31f70c-6e11-4c1d-8a0e-da5a3f090de1" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;"Log AFTER REQUEST"]' />
+	</flow>
+	<flow name="getAnimalsListPayload" doc:id="c9c8bd2e-d4dd-43db-a7fd-7af2bf96e06e" >
+		<http:listener doc:name="HTTP GET" doc:id="1069410e-66e6-47fc-be25-3c7f4be43de4" config-ref="HTTP_Listener_config1" path="/mock-when-get" allowedMethods="GET"/>
+		<set-payload value='#[%dw 2.0&#10;&#10;output application/json&#10;&#10;---&#10;{&#10;	"animals": [&#10;		"animal":"dog",&#10;		"animal":"cat"&#10;	]&#10;}]' doc:name="Set Payload - Animals List" doc:id="561fec9f-4201-444b-a93a-b26b7ccbfa17" />
+		<logger level="INFO" doc:name="Log Payload" doc:id="b9e6e03a-3eab-4f95-a2eb-c63212add92e" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"log_inside_request": payload&#10;}]'/>
+	</flow>
+	<flow name="getPetName" doc:id="1fde3e56-07ef-4b0e-b871-3f29519c19b4" >
+		<http:listener doc:name="HTTP GEZ" doc:id="360530aa-5b86-4948-b771-5c9992988e72" config-ref="HTTP_Listener_config" path="/mock-when-pet" allowedMethods="GET"/>
+		<set-variable value='#["EROS"]' doc:name="Set Variable - myPetName" doc:id="65e00617-ad9a-4fb4-8e55-d328cb4f1500" variableName="myPetName"/>
+		<logger level="INFO" doc:name="Log PET NAME" doc:id="505f975e-ae0f-4e28-b092-20af1fc64e8b" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"myPetName_1": vars.myPetName&#10;}]'/>
+		<choice doc:name="Choice" doc:id="5babb0d4-0fe8-4217-9fce-5f5578c56bf8" >
+			<when expression="#[isEmpty(vars.myPetName) or vars.myPetName == null]">
+				<set-variable value='#["ARES"]' doc:name="Set Variable - RESET myPetName" doc:id="cb2f9da6-70ac-4f59-a2ee-825993b09d18" variableName="myPetName"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Log Default" doc:id="056343a6-2ae8-46b6-ae52-3e1a6fbd653f" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"log_default": "PET NAME IS VALID"&#10;}]'/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Log Pet NAME RESET" doc:id="b4a3944e-76bf-45b7-b6a8-b29e6fc5c89f" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"myPetName_1_RESET": vars.myPetName&#10;}]'/>
+		<set-payload value="#[vars.myPetName]" doc:name="Set Payload - myPetName" doc:id="36593574-4c6b-4a32-806d-6e9866fc4920" />
+	</flow>
+	<flow name="getFruitsName" doc:id="50836fad-9ad0-40ae-a501-2016644c4946" >
+		<http:listener doc:name="HTTP GET" doc:id="42e4ac47-3bb0-4a32-932f-00c41a37ac0c" config-ref="HTTP_Listener_config" path="/mock-when-fruits" allowedMethods="GET"/>
+		<flow-ref doc:name="Flow Reference - generateFruitsName" doc:id="7143982d-6d08-43b8-9ece-ceb005abbf48" name="generateFruitsName"/>
+		<ee:transform doc:name="Transform Message Fruits Data" doc:id="9a0482d9-e1f8-4195-9dbe-1462b5ddeda7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map((value, key)->
+	{
+		(key): value
+	}
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger AFTER TRANSFORMATION" doc:id="e414d61d-fb85-4b1c-a573-7a64236c3024" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"logger_after_transformer": payload&#10;}]'/>
+	</flow>
+	<flow name="generateFruitsName" doc:id="65f88c54-8041-466f-b2a8-c587e5563ed0" >
+		<set-payload value='#[["mango", "pineapple", "melon", "kiwi", "papaya"]]' doc:name="Set Payload - Fruits" doc:id="5fe67348-1816-4fad-bc2b-85d954d26bb3" />
+		<logger level="INFO" doc:name="Logger Fruits" doc:id="9e2b48d7-54c2-4f12-a325-71ebe0c8ec02" message='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;&#10;{&#10;	"logger_fruits": payload&#10;}]'/>
+	</flow>
+</mule>
