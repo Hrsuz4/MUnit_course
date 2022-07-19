@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_7970ce9d_30d7_4d9b_8979_592d9b713544_Output_Payload = {|
+  key: Null, 
+  value: String
+|}
+
