@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getRandomNumber" doc:id="5925efcd-3d92-4b15-ab50-f698961782c1" >
+		<http:listener doc:name="HTTP GET" doc:id="2d047908-287b-4cf2-a4aa-cddf37743001" config-ref="HTTP_Listener_config" path="/spy1" allowedMethods="GET"/>
+		<logger level="INFO" doc:name="Log START" doc:id="0f8238c3-2813-4796-8a09-1eacec383c21" message='#["LOG START"]'/>
+		<http:request method="GET" doc:name="Request - generateRandomNumber" doc:id="e0469b34-fc72-4d24-ab81-e4de23a28466" config-ref="HTTP_Request_configuration" path="/randomNumber"/>
+		<logger level="INFO" doc:name="Log END" doc:id="a415bae6-8f74-4e7c-becf-76655f2c6630" message='#["LOG END"]'/>
+	</flow>
+	<flow name="generateRandomNumber" doc:id="0c1e141a-5af7-452d-b6b6-c3eea1ce259e" >
+		<http:listener doc:name="HTTP GET" doc:id="0dcfb77c-d35d-4ae3-8d80-dc3ea58d1b6e" config-ref="HTTP_Listener_config1" path="/randomNumber" allowedMethods="GET"/>
+		<logger level="INFO" doc:name="Log START" doc:id="3aa46258-7799-40c6-b3e7-b945cc7ed039" message='#["LOG START"]' />
+		<set-payload value='#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;{&#10;	"randomNumber": randomInt(100)&#10;}]' doc:name="Set Payload - RandomNumber" doc:id="398f2905-a843-4422-bd2a-4b6b21bdebc1" />
+		<logger level="INFO" doc:name="Log Random Number" doc:id="6a01259e-fc7f-458e-b278-22c6bfc5133a" message="#[%dw 2.0&#10;&#10;output application/json&#10;---&#10;payload]"/>
+		<logger level="INFO" doc:name="Log END" doc:id="d8f605f5-9bd1-40cb-ad78-cc58fcac5ced" message='#["LOG END"]' />
+	</flow>
+	<flow name="getStringLength" doc:id="49f68a75-f235-4465-be05-28d2554a97cf" >
+		<http:listener doc:name="HTTP GET" doc:id="075813b6-6b38-4915-854f-69c2524a6dcb" config-ref="HTTP_Listener_config" path="/spy2/{sample}" allowedMethods="GET"/>
+		<logger level="INFO" doc:name="sLog START" doc:id="682af171-509c-4fc4-8f07-e39af0746aa9" message='#["LOG START"]' />
+		<set-payload value='#[attributes.uriParams.sample default ""]' doc:name="Set Payload - Sample" doc:id="f3b76fbb-2ff9-4b82-8d26-cd1bb965c461" />
+		<ee:transform doc:name="Calculate String Length" doc:id="ebcb9bc4-f3e5-4435-9194-2d44f9025156" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+sizeOf(payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload - string Length" doc:id="4903a556-8a3d-4770-a1dd-e11c898bd6dc" />
+		<logger level="INFO" doc:name="Log END" doc:id="26afe1c4-3c77-473a-bdfb-4e8a6e2d45bb" message='#["LOG END"]' />
+	</flow>
+</mule>
